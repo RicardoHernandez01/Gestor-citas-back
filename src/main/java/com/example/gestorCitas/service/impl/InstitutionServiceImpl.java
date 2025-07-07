@@ -7,13 +7,19 @@ import com.example.gestorCitas.service.InstitutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class InstitutionServiceImpl implements InstitutionService {
 
     @Autowired
     InstitutionRepository institutionRepository;
+
+    private Institution findById(int id){
+        return institutionRepository.findById(id).orElseThrow(
+                ()-> new ResponseRuntimeException("Institution is not available",HttpStatus.NOT_FOUND));
+    }
 
     @Override
     public List<Institution> getInstitutionList() {
@@ -26,24 +32,22 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Override
     public Institution saveInstitution(Institution institution) {
-        Institution institutionSave = institutionRepository.save(institution);
-        if(institutionSave!= null){
-            return institutionSave;
+        if(institution!= null){
+            return institutionRepository.save(institution);
         }
         throw new ResponseRuntimeException("Error saving institution", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
-    public Institution UpdateInstitution(int id, Institution institution) {
-        Institution institutionExist = institutionRepository.findById(id).
-                orElseThrow(()-> new ResponseRuntimeException("Institution is not available",HttpStatus.NOT_FOUND));
+    public Institution updateInstitution(int id, Institution institution) {
+        Institution institutionExist = findById(id);
+        institution.setIdInstitution(id);
         return institutionRepository.save(institution);
     }
 
     @Override
     public void deleteInstitution(int idInstitution) {
-        Institution institutionExist = institutionRepository.findById(idInstitution).
-                orElseThrow(()-> new ResponseRuntimeException("Institution is not available", HttpStatus.NOT_FOUND));
+        Institution institutionExist = findById(idInstitution);
         try{
             institutionRepository.deleteById(idInstitution);
         } catch (DataIntegrityViolationException e) {
@@ -52,5 +56,10 @@ public class InstitutionServiceImpl implements InstitutionService {
             throw new ResponseRuntimeException(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @Override
+    public Institution findByIdInstitution(int idInstitution) {
+        return findById(idInstitution);
     }
 }

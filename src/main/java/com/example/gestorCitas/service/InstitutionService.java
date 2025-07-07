@@ -7,7 +7,8 @@ import java.util.List;
 public interface InstitutionService {
     List<Institution> getInstitutionList();
     Institution saveInstitution(Institution institution);
-    Institution UpdateInstitution(int id, Institution institution);
+    Institution updateInstitution(int id, Institution institution);
     void deleteInstitution(int idInstitution);
+    Institution findByIdInstitution(int idInstitution);
 
 }
