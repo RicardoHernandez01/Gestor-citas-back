@@ -1,8 +1,10 @@
 package com.example.gestorCitas.service.impl;
 
 import com.example.gestorCitas.domain.Department;
+import com.example.gestorCitas.domain.Institution;
 import com.example.gestorCitas.exception.ResponseRuntimeException;
 import com.example.gestorCitas.repository.DepartmentRepository;
+import com.example.gestorCitas.repository.InstitutionRepository;
 import com.example.gestorCitas.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,9 +19,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     DepartmentRepository departmentRepository;
 
-    private Department findById(int id){
+    @Autowired
+    InstitutionRepository institutionRepository;
+
+    private Department findByIdDepartment(int id){
         return departmentRepository.findById(id).orElseThrow(
                 ()-> new ResponseRuntimeException("the apartment is not available", HttpStatus.NOT_FOUND));
+    }
+
+    private Institution findByIdInstitution(int idInstitution){
+        return institutionRepository.findById(idInstitution).orElseThrow(
+                ()-> new ResponseRuntimeException("the institution is not available",HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -33,7 +43,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department getDepartmentById(int id) {
-        return findById(id);
+        return findByIdDepartment(id);
     }
 
     @Override
@@ -43,23 +53,26 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department saveDepartment(Department department) {
-        if(department!=null){
-            return departmentRepository.save(department);
+    public void saveDepartment(Department department, int idInstitution) {
+        Institution institutionExist = findByIdInstitution(idInstitution);
+        if(department!=null && institutionExist!=null){
+            department.setInstitution(institutionExist);
+             departmentRepository.save(department);
         }else {
             throw new ResponseRuntimeException("the department is null",HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public Department updateDepartment(Department department) {
-        Department departmentExist = findById(department.getIdDepartment());
-        return departmentRepository.save(department);
+    public void updateDepartment(Department department) {
+        Department departmentExist = findByIdDepartment(department.getIdDepartment());
+        department.setInstitution(departmentExist.getInstitution());
+         departmentRepository.save(department);
     }
 
     @Override
     public void deleteDepartment(int id) {
-        Department departmentExist = findById(id);
+        Department departmentExist = findByIdDepartment(id);
         try{
             departmentRepository.deleteById(id);
         }catch (DataIntegrityViolationException e){

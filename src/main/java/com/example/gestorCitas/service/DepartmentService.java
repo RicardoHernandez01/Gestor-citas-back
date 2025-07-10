@@ -8,8 +8,8 @@ public interface DepartmentService {
     List<Department> getDepartmentList();
     Department getDepartmentById(int id);
     Department getDepartmentFindByName(String nameDepartment);
-    Department saveDepartment(Department department);
-    Department updateDepartment(Department department);
+    void saveDepartment(Department department,int idInstitution);
+    void updateDepartment(Department department);
     void deleteDepartment(int id);
 
     //list<Department) getAllDepartmentByIdInstitution(int idInstitution);

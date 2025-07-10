@@ -1,6 +1,7 @@
 package com.example.gestorCitas.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,10 @@ public class Vacant {
             strategy = GenerationType.IDENTITY
     )
     private int idVacant;
-    @Column(nullable = false)
+    @Column(
+            unique = true
+    )
+    @NotBlank(message = "the name of the vacancy cannot be null")
     private String nameVacant;
     private String positionVacant;
     private String statusVacant;

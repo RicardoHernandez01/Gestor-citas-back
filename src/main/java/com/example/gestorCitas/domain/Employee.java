@@ -32,8 +32,8 @@ public class Employee {
     private String lastNameEmployee;
     private int ageEmployee;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message = "La fecha de nacimiento no puede ser nula.") // Asegura que no sea null
-    @Past(message = "La fecha de nacimiento debe ser en el pasado.") // Asegura que la fecha no sea futura ni hoy
+    @NotNull(message = "the birthdate cannot be null.") // Asegura que no sea null
+    @Past(message = "the birthdate must be in the past.") // Asegura que la fecha no sea futura ni hoy
     private LocalDate birthdateEmployee;
     private String addressEmployee;
     @Column(nullable = false)

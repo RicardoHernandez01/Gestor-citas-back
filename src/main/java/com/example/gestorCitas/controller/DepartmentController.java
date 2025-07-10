@@ -34,8 +34,9 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveDepartment(@Valid @RequestBody Department department){
-        departmentService.saveDepartment(department);
+    public ResponseEntity<?> saveDepartment(@Valid @RequestBody Department department,
+                                            @RequestParam int idInstitution){
+        departmentService.saveDepartment(department, idInstitution);
         return ResponseEntity.status(HttpStatus.CREATED).body("department created successfully");
     }
 

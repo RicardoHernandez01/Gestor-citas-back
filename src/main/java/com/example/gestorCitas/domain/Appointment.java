@@ -1,6 +1,9 @@
 package com.example.gestorCitas.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +26,11 @@ public class Appointment {
     )
     private int idAppointment;
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "the date must not be null")
     private LocalDate dateAppointment;
-    @Column(nullable = false)
+    @NotNull(message = "the time must not be null")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime timeAppointment;
     @ManyToOne
     @JoinColumn(
