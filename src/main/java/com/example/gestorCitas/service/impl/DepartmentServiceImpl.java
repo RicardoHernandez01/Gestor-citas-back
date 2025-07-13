@@ -3,6 +3,7 @@ package com.example.gestorCitas.service.impl;
 import com.example.gestorCitas.domain.Department;
 import com.example.gestorCitas.domain.Institution;
 import com.example.gestorCitas.exception.ResponseRuntimeException;
+import com.example.gestorCitas.projectionInterface.DepartmentProjection;
 import com.example.gestorCitas.repository.DepartmentRepository;
 import com.example.gestorCitas.repository.InstitutionRepository;
 import com.example.gestorCitas.service.DepartmentService;
@@ -33,22 +34,29 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<Department> getDepartmentList() {
-        List<Department> departmentList = departmentRepository.findAll();
-        if(departmentList.isEmpty()){
-            throw new ResponseRuntimeException("the apartment list is empty", HttpStatus.NOT_FOUND);
-        }
-        return departmentList;
+    public List<DepartmentProjection> getDepartmentListByInstitution(int idInstitution) {
+        Institution institution = findByIdInstitution(idInstitution);
+        return departmentRepository.findByInstitution(institution);
     }
 
     @Override
-    public Department getDepartmentById(int id) {
-        return findByIdDepartment(id);
+    public List<DepartmentProjection> getDepartmentListByNameInstitution(String nameInstitution) {
+        Institution institution = institutionRepository.findByNameInstitution(nameInstitution).orElseThrow(
+                () -> new ResponseRuntimeException("the name Institution is not available", HttpStatus.NOT_FOUND)
+        );
+        return departmentRepository.findByInstitution(institution);
     }
 
     @Override
-    public Department getDepartmentFindByName(String nameDepartment) {
-        return departmentRepository.findByNameDepartment(nameDepartment).orElseThrow(
+    public DepartmentProjection getDepartmentById(int id) {
+        return departmentRepository.findByIdDepartment(id).orElseThrow(
+                () -> new ResponseRuntimeException("The apartment is not available", HttpStatus.NOT_FOUND)
+        );
+    }
+
+    @Override
+    public DepartmentProjection getDepartmentFindByName(String nameDepartment) {
+        return departmentRepository.findDepartmentProjectionByNameDepartment(nameDepartment).orElseThrow(
                 ()->new ResponseRuntimeException("the apartment is not available", HttpStatus.NOT_FOUND));
     }
 

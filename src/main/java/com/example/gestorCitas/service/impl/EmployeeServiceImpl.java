@@ -2,6 +2,7 @@ package com.example.gestorCitas.service.impl;
 
 import com.example.gestorCitas.domain.Employee;
 import com.example.gestorCitas.exception.ResponseRuntimeException;
+import com.example.gestorCitas.projectionInterface.EmployeeProjection;
 import com.example.gestorCitas.repository.EmployeeRepository;
 import com.example.gestorCitas.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +42,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee updateEmployee(Employee employee) {
-        Employee employeeExist = findByIdEmployee(employee.getIdEmployee());
+        Employee employeeExist = findById(employee.getIdEmployee());
         return employeeRepository.save(employee);
     }
 
     @Override
     public void deleteEmployee(int id) {
-        Employee employeeExist = findByIdEmployee(id);
+        Employee employeeExist = findById(id);
         try {
             employeeRepository.deleteById(id);
         }catch (DataIntegrityViolationException e){
@@ -58,13 +59,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee findByIdEmployee(int id) {
-        return findById(id);
-    }
+    public EmployeeProjection findBySpecification(Integer id, String name) {
+        if(id != null){
+            return employeeRepository.findByIdEmployee(id).orElseThrow(
+                    () -> new ResponseRuntimeException("Employee is not available", HttpStatus.NOT_FOUND)
+            );
+        }
+        if(name != null){
+            return  employeeRepository.findByFirstNameEmployee(name).orElseThrow(
+                    () ->  new ResponseRuntimeException("Employee is not available", HttpStatus.NOT_FOUND)
+            );
+        }
 
-    @Override
-    public Employee findByNameEmployee(String name) {
-        return employeeRepository.findByFirstNameEmployee(name).orElseThrow(
-                ()-> new ResponseRuntimeException("Employee is not available",HttpStatus.NOT_FOUND));
+        throw new ResponseRuntimeException("no data has been received",HttpStatus.BAD_REQUEST);
     }
 }

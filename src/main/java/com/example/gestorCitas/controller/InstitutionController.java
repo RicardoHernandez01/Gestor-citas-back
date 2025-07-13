@@ -22,9 +22,11 @@ public class InstitutionController {
         return ResponseEntity.ok(institutionService.getInstitutionList());
     }
 
-    @GetMapping("/findById/{id}")
-    public ResponseEntity<?> getFindByIdInstitution(@PathVariable int id){
-        return ResponseEntity.ok(institutionService.findByIdInstitution(id));
+    @GetMapping("/searchInstitution")
+    public ResponseEntity<?> getFindByIdInstitution(
+            @RequestParam(required = false) Integer idInstitution,
+            @RequestParam(required = false) String nameInstitution){
+        return ResponseEntity.ok(institutionService.findByInstitutionCriteria(idInstitution, nameInstitution));
     }
 
     @PostMapping()

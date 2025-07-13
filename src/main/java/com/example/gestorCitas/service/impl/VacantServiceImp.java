@@ -3,9 +3,11 @@ package com.example.gestorCitas.service.impl;
 import com.example.gestorCitas.domain.Department;
 import com.example.gestorCitas.domain.Vacant;
 import com.example.gestorCitas.exception.ResponseRuntimeException;
+import com.example.gestorCitas.projectionInterface.VacantProjection;
 import com.example.gestorCitas.repository.DepartmentRepository;
 import com.example.gestorCitas.repository.VacantRepository;
 import com.example.gestorCitas.service.VacantService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class VacantServiceImp implements VacantService {
 
@@ -53,29 +56,30 @@ public class VacantServiceImp implements VacantService {
         return findById(id);
     }
 
-    /**
-     * method to search for a vacancy by name
-     * @param  vacant vacancy name
-     * @return vacante object
-     */
     @Override
-    public Vacant getVacantByNameVacant(String vacant) {
-        return  vacantRepository.findByNameVacant(vacant).orElseThrow(
-                ()-> new ResponseRuntimeException("the vacant is not available",HttpStatus.NOT_FOUND));
+    public VacantProjection getVacantByNameVacant(String nameVacant) {
+        return vacantRepository.findVacantProjectionByNameVacant(nameVacant).orElseThrow(
+                () -> new ResponseRuntimeException("The vacancy is not available", HttpStatus.NOT_FOUND)
+        );
     }
 
-    /**
-     * method to get a list of vacancies by position
-     * @param position vacancy position
-     * @return vacancy list
-     */
+
     @Override
-    public List<Vacant> getVacantByPositionVacant(String position) {
-        List<Vacant> vacantList = vacantRepository.findByPositionVacant(position);
-        if(vacantList!=null){
-            return vacantList;
-        }
-        throw new ResponseRuntimeException("the vacant list is null",HttpStatus.BAD_REQUEST);
+    public List<VacantProjection> getVacantListBySpecification(String positionVacant, Integer idDepartment, String nameDepartment) {
+       if(positionVacant !=null){
+           return vacantRepository.findByPositionVacant(positionVacant);
+       }
+       if(idDepartment !=null){
+           Department department = findByidDepartment(idDepartment);
+           return  vacantRepository.findByDepartment(department);
+       }
+       if(nameDepartment != null){
+           Department department = departmentRepository.findByNameDepartment(nameDepartment).orElseThrow(
+                   () -> new ResponseRuntimeException("Department is not available", HttpStatus.NOT_FOUND)
+           );
+           return vacantRepository.findByDepartment(department);
+       }
+        throw new ResponseRuntimeException("no data has been received", HttpStatus.BAD_REQUEST);
     }
 
     @Override

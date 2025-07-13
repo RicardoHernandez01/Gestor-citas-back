@@ -24,14 +24,11 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getEmployeeList());
     }
 
-    @GetMapping("/findById/{id}")
-    public ResponseEntity<?> getEmployeeId(@PathVariable int id){
-        return ResponseEntity.ok(employeeService.findByIdEmployee(id));
-    }
-
-    @GetMapping("/findByName/{name}")
-    public ResponseEntity<?> getEmployeeName(@PathVariable String name){
-        return ResponseEntity.ok(employeeService.findByNameEmployee(name));
+    @GetMapping("/searchEmployee")
+    public ResponseEntity<?> getEmployeeId(
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) String name){
+        return ResponseEntity.ok(employeeService.findBySpecification(id, name));
     }
 
     @PostMapping

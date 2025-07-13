@@ -2,6 +2,7 @@ package com.example.gestorCitas.service.impl;
 
 import com.example.gestorCitas.domain.Institution;
 import com.example.gestorCitas.exception.ResponseRuntimeException;
+import com.example.gestorCitas.projectionInterface.InstitutionProjection;
 import com.example.gestorCitas.repository.InstitutionRepository;
 import com.example.gestorCitas.service.InstitutionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,21 @@ public class InstitutionServiceImpl implements InstitutionService {
     }
 
     @Override
-    public Institution findByIdInstitution(int idInstitution) {
-        return findById(idInstitution);
+    public InstitutionProjection findByInstitutionCriteria(
+            Integer idInstitution,
+            String nameInstitution) {
+        if(idInstitution != null){
+            return institutionRepository.findByIdInstitution(idInstitution).orElseThrow(
+                    () -> new ResponseRuntimeException("Institution is not available", HttpStatus.NOT_FOUND)
+            );
+        }
+        if(nameInstitution !=null){
+            return institutionRepository.findInstitutionProjectionByNameInstitution(nameInstitution).orElseThrow(
+                    () -> new ResponseRuntimeException("Institution is not available", HttpStatus.NOT_FOUND)
+            );
+        }
+
+        throw new ResponseRuntimeException("no data has been received",HttpStatus.BAD_REQUEST);
     }
+
 }

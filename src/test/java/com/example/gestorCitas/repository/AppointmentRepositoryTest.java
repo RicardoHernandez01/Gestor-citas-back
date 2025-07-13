@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -64,5 +65,15 @@ class AppointmentRepositoryTest {
             System.out.println("false");
         }
     }
+
+    @Test
+    @Transactional
+    public void findAppointmentByDateAndEmployee(){
+        Employee employee = findById(2);
+        List<Appointment> appointmentList= appointmentRepository.findByDateAppointmentAndEmployee(
+                LocalDate.of(2025, 7,11),employee);
+        System.out.println(appointmentList);
+    }
+
 
 }

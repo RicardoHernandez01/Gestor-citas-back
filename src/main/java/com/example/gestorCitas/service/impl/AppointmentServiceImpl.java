@@ -5,6 +5,7 @@ import com.example.gestorCitas.domain.Department;
 import com.example.gestorCitas.domain.Employee;
 import com.example.gestorCitas.domain.Vacant;
 import com.example.gestorCitas.exception.ResponseRuntimeException;
+import com.example.gestorCitas.projectionInterface.AppointmentProjection;
 import com.example.gestorCitas.repository.AppointmentRepository;
 import com.example.gestorCitas.repository.DepartmentRepository;
 import com.example.gestorCitas.repository.EmployeeRepository;
@@ -15,6 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -59,6 +61,36 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<Appointment> getAppointmentList() {
         return appointmentRepository.findAll();
+    }
+
+    // specification
+    @Override
+    public List<AppointmentProjection> getAppointmentListByCriteria(Integer idEmployee,
+                                                                    Integer idDepartment,
+                                                                    Integer idVacant,
+                                                                    LocalDate date) {
+        if(idEmployee != null && idDepartment == null && idVacant == null && date ==null){
+            Employee employee = findByIdEmployee(idEmployee);
+            return appointmentRepository.findByEmployee(employee);
+        }
+        if(idEmployee == null && idDepartment != null && idVacant == null && date ==null){
+            Department department = findByIdDepartment(idDepartment);
+            return appointmentRepository.findByDepartment(department);
+        }
+        if(idEmployee == null && idDepartment == null && idVacant != null && date ==null){
+            Vacant vacant = findByIdVacant(idVacant);
+            return appointmentRepository.findByVacant(vacant);
+        }
+        if(idEmployee != null && idDepartment == null && idVacant == null && date !=null){
+            Employee employee = findByIdEmployee(idEmployee);
+            return appointmentRepository.findByDateAppointmentAndEmployee(date,employee);
+        }
+        if(idEmployee == null && idDepartment != null && idVacant == null && date !=null){
+            Department department = findByIdDepartment(idDepartment);
+            return appointmentRepository.findByDateAppointmentAndDepartment(date, department);
+        }
+
+        throw new ResponseRuntimeException("no data has been entered", HttpStatus.BAD_REQUEST);
     }
 
     @Override

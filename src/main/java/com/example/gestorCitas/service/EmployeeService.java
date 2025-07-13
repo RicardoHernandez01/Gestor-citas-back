@@ -1,6 +1,7 @@
 package com.example.gestorCitas.service;
 
 import com.example.gestorCitas.domain.Employee;
+import com.example.gestorCitas.projectionInterface.EmployeeProjection;
 
 import java.util.List;
 
@@ -9,6 +10,5 @@ public interface EmployeeService {
     Employee saveEmployee(Employee employee);
     Employee updateEmployee(Employee employee);
     void deleteEmployee(int id);
-    Employee findByIdEmployee(int id);
-    Employee findByNameEmployee(String name);
+    EmployeeProjection findBySpecification(Integer id, String name);
 }

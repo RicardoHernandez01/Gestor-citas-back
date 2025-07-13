@@ -1,9 +1,11 @@
 package com.example.gestorCitas.controller;
 
 import com.example.gestorCitas.domain.Vacant;
+import com.example.gestorCitas.projectionInterface.VacantProjection;
 import com.example.gestorCitas.repository.VacantRepository;
 import com.example.gestorCitas.service.VacantService;
 import jakarta.validation.Valid;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +30,18 @@ public class VacantController {
         return ResponseEntity.ok(vacantService.getVacantById(id));
     }
 
-    @GetMapping("/findByName/{name}")
-    public ResponseEntity<?> getVacantByName(@PathVariable String name){
-        return ResponseEntity.ok(vacantService.getVacantByNameVacant(name));
+    @GetMapping("/FindByName/{nameVacant}")
+    public ResponseEntity<?> getVacantByName(@PathVariable String nameVacant){
+        return ResponseEntity.ok(vacantService.getVacantByNameVacant(nameVacant));
     }
 
-    @GetMapping("/findByPositionVacant/{position}")
-    public ResponseEntity<List<Vacant>> getVacantListByPosition(@PathVariable String position){
-        return ResponseEntity.ok(vacantService.getVacantByPositionVacant(position));
+    //consulta por especificacion
+    @GetMapping("/searchBySpecification")
+    public ResponseEntity<List<VacantProjection>> getVacantListBySpecification(
+            @RequestParam(required = false) String positionVacant,
+            @RequestParam(required = false) Integer idDepartment,
+            @RequestParam(required = false) String nameDepartment){
+        return ResponseEntity.ok(vacantService.getVacantListBySpecification(positionVacant,idDepartment,nameDepartment));
     }
 
     @PostMapping
@@ -56,10 +62,6 @@ public class VacantController {
         vacantService.deleteVacant(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
 
 
 

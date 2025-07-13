@@ -1,6 +1,8 @@
 package com.example.gestorCitas.controller;
 
 import com.example.gestorCitas.domain.Department;
+import com.example.gestorCitas.domain.Institution;
+import com.example.gestorCitas.projectionInterface.DepartmentProjection;
 import com.example.gestorCitas.service.DepartmentService;
 import jakarta.validation.Valid;
 import org.apache.catalina.connector.Response;
@@ -18,9 +20,10 @@ public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
 
-    @GetMapping
-    public ResponseEntity<List<Department>> getDepartmentList(){
-        return ResponseEntity.ok(departmentService.getDepartmentList());
+
+    @GetMapping("/findByInstitution/{idInstitution}")
+    public ResponseEntity<List<DepartmentProjection>> getDepartmentListByInstitution(@PathVariable int idInstitution){
+        return ResponseEntity.ok(departmentService.getDepartmentListByInstitution(idInstitution));
     }
 
     @GetMapping("/findById/{id}")
@@ -31,6 +34,11 @@ public class DepartmentController {
     @GetMapping("/findByName/{name}")
     public ResponseEntity<?> getDepartmentByName(@PathVariable String name){
         return ResponseEntity.ok(departmentService.getDepartmentFindByName(name));
+    }
+
+    @GetMapping("/findByNameInstitution")
+    public ResponseEntity<?> getDepartmentByNameInstitution(@RequestParam String nameInstitution){
+        return ResponseEntity.ok(departmentService.getDepartmentListByNameInstitution(nameInstitution));
     }
 
     @PostMapping
